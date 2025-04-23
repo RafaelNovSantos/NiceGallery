@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.13.35931.197 d17.13
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NiceGallery.Web", "NiceGallery\NiceGallery.Web.csproj", "{7E085B88-992B-4903-AF4F-B2DCAC79C813}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NiceGallery.Web", "NiceGallery.Front-End\NiceGallery.Web.csproj", "{7E085B88-992B-4903-AF4F-B2DCAC79C813}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NiceGallery.Api", "NiceGallery.Api\NiceGallery.Api.csproj", "{42D90DC0-F406-4201-B7FC-C50E80A0FCCC}"
 EndProject
