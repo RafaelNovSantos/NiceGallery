@@ -1,0 +1,192 @@
+﻿@page "/editproducts"
+@inject HttpClient Http
+
+
+<MudContainer  MaxWidth="MaxWidth.False"   Style="overflow: auto">
+    <MudText Class="mt-4" Typo="Typo.h3" Align="Align.Center" GutterBottom="true">📦 Produtos disponíveis</MudText>
+    <MudText Class="mb-6" Align="Align.Center">Departamentos são usados para organizar usuários, direcionar o chatbot e facilitar transferências dentro do chatPro. Eles também podem ser utilizados em widgets.</MudText>
+
+
+
+
+
+    <MudTable T="Product" Items="@produtos"
+    Filter="Procurar"
+    Hover="true" Dense="true" Bordered="true"
+    MultiSelection="true"
+    RowEditCommit="SalvarEdicaoProduto"
+    Class="tableEdit"
+    @bind-SelectedItems="selectedItems"
+    EditTrigger="TableEditTrigger.EditButton"
+    EditButtonPosition="TableEditButtonPosition.End">
+
+
+
+
+        <ToolBarContent>
+            <MudText Class="MudTextSize">Gerenciar Produtos</MudText>
+            <div class="InputContainer ma-5">
+                <input type="text" placeholder="Procurar..."
+                @bind="criterio"
+                name="text" class="searchinput" id="input">
+                <div class="border"></div>
+
+                <label for="input" class="labelforsearch">
+                    <svg viewBox="0 0 512 512" class="searchIcon"><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"></path></svg>
+                </label>
+
+            </div>
+
+
+
+            <button class="bookmarkBtn ma-1" @onclick="StartAddItem">
+
+                <span class="IconContainer">
+                    <MudIcon Color="Color.Dark" Icon="@Icons.Material.Outlined.Add"></MudIcon>
+                </span>
+                <p class="text">Adicionar</p>
+            </button>
+            <button class="bookmarkBtn ma-1" @onclick="DeleteSelectedItems">
+                <span class="IconContainer">
+                    <MudIcon Color="Color.Error" Icon="@Icons.Material.Outlined.Delete"></MudIcon>
+                </span>
+                <p class="text">Deletar</p>
+            </button>
+        </ToolBarContent>
+
+        <HeaderContent>
+            <MudTh>Nome</MudTh>
+            <MudTh>Preço</MudTh>
+        </HeaderContent>
+
+        <RowTemplate>
+
+
+            <MudTd DataLabel="Nome">@context.Name</MudTd>
+            <MudTd DataLabel="Preço">R$ @context.Price</MudTd>
+        </RowTemplate>
+
+        <RowEditingTemplate>
+            <MudTd><MudTextField @bind-Value="context.Name" Required Label="Nome do Produto" /></MudTd>
+            <MudTd><MudNumericField @bind-Value="context.Price" Required Label="Preço" DecimalSeparator="','" /></MudTd>
+        </RowEditingTemplate>
+
+        <PagerContent>
+            <MudTablePager PageSizeOptions="[5,10,25]" RowsPerPageString="Produtos por página:" />
+        </PagerContent>
+    </MudTable>
+
+</MudContainer>
+
+
+
+
+
+
+@code {
+    private List<Product> produtos = new();
+    private HashSet<Product> selectedItems = new();
+    private string criterio = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        await CarregarProdutos();
+    }
+
+    private async Task CarregarProdutos()
+    {
+        try
+        {
+
+            produtos.Clear();
+
+            produtos = await Http.GetFromJsonAsync<List<Product>>("https://localhost:7097/api/produtos");
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Erro ao carregar produtos: " + ex.Message);
+        }
+    }
+
+    private bool Procurar(Product produto)
+    {
+        if (string.IsNullOrWhiteSpace(criterio))
+            return true;
+
+        return produto.Name?.Contains(criterio, StringComparison.OrdinalIgnoreCase) == true
+               || produto.Price.ToString().Contains(criterio);
+    }
+
+
+
+    private async Task StartAddItem()
+    {
+        var options = new DialogOptions { CloseButton = true };
+        var dialog = DialogService.Show<DialogAddProduct>("Adicionar produto", options);
+        var result = await dialog.Result;
+
+        if (!result.Canceled && result.Data is Product newItem)
+        {
+
+            await CarregarProdutos();
+
+
+
+        }
+    }
+
+
+    private async void DeleteSelectedItems()
+    {
+        foreach (var item in selectedItems)
+        {
+            await Http.DeleteAsync($"https://localhost:7097/api/produtos/{item.Id}");
+        }
+
+        await CarregarProdutos();
+
+
+        selectedItems = new HashSet<Product>();
+
+        StateHasChanged();
+
+       
+    }
+
+
+    private async void SalvarEdicaoProduto(object produtoObj)
+    {
+        var produto = produtoObj as Product;
+
+        if (produto == null)
+        {
+            Console.WriteLine("Produto não encontrado na edição.");
+            return;
+        }
+
+        try
+        {
+            var response = await Http.PutAsJsonAsync($"https://localhost:7097/api/produtos/{produto.Id}", produto);
+            if (response.IsSuccessStatusCode)
+            {
+                Snackbar.Add("Produto atualizado com sucesso!", Severity.Success);
+                await CarregarProdutos();
+            }
+            else
+            {
+                var error = await response.Content.ReadAsStringAsync();
+                Snackbar.Add($"Erro ao atualizar: {error}", Severity.Error);
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Exceção ao atualizar produto: {ex.Message}");
+        }
+    }
+
+
+
+
+ 
+}

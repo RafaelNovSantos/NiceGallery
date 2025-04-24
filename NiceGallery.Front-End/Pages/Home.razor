@@ -1,7 +1,37 @@
 ﻿@page "/"
+@inject NavigationManager NavManager
 
-<PageTitle>Home</PageTitle>
+<MudContainer MaxWidth="MaxWidth.Medium" Class="d-flex flex-column justify-between min-h-screen">
 
-<h1>Hello, world!</h1>
+    <!-- Conteúdo principal -->
+    <MudPaper Elevation="6" Class="p-8 rounded-xl shadow-lg mt-10 text-center  p-5">
+        <MudIcon Icon="@Icons.Material.Filled.Inventory" Size="Size.Large" Color="Color.Primary" Class="mb-4" />
+        <MudText Typo="Typo.h4" GutterBottom="true">Bem-vindo ao NiceGallery</MudText>
+        <MudText Typo="Typo.subtitle1" Class="mb-6">
+            Gerencie seus produtos com eficiência e praticidade. Use os recursos disponíveis para cadastrar, editar, buscar e visualizar produtos.
+        </MudText>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@IrParaProdutos" Size="Size.Large">
+            Começar
+        </MudButton>
+    </MudPaper>
 
-Welcome to your new app.
+    <!-- Rodapé -->
+    <footer class="mt-auto py-4 text-center">
+        <MudText Typo="Typo.caption" Class="text-muted">
+            © @DateTime.Now.Year NiceGallery. Todos os direitos reservados.
+        </MudText>
+    </footer>
+</MudContainer>
+
+<style>
+    .min-h-screen {
+        min-height: 100vh;
+    }
+    </style>
+
+@code {
+    private void IrParaProdutos()
+    {
+        NavManager.NavigateTo("/editproducts");
+    }
+}

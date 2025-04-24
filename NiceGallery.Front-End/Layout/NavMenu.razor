@@ -1,39 +1,254 @@
-﻿<div class="top-row ps-3 navbar navbar-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="">NiceGallery</a>
-        <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-    </div>
-</div>
+﻿﻿
 
-<div class="@NavMenuCssClass nav-scrollable" @onclick="ToggleNavMenu">
-    <nav class="nav flex-column">
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="counter">
-                <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Counter
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="weather">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Weather
-            </NavLink>
-        </div>
-    </nav>
-</div>
+<ul class="menu-sidebar">
+    <li>
+        <a href="">
+            <MudIcon Icon="@Icons.Material.Filled.Home" Title="Logo" />
+            <span>Início</span>
+        </a>
+    </li>
 
-@code {
-    private bool collapseNavMenu = true;
+    <li>
+        <a href="editproducts">
+            <MudIcon Icon="@Icons.Material.Filled.Edit" Title="Chat" />
+            <span>Gerenciar Produtos</span>
+        </a>
+    </li>
 
-    private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+    <li>
+        <a href="report">
+            <MudIcon Icon="@Icons.Material.Filled.ListAlt" Title="Logo" />
+            <span>Relatório de produtos</span>
+        </a>
+    </li>
 
-    private void ToggleNavMenu()
+    <MudSpacer></MudSpacer>
+
+    <li>
+        <MudDivider></MudDivider>
+        <a >
+            <MudIcon Icon="@Icons.Material.Filled.Notifications" Color="Color.Primary" Title="Notificações" />
+            <span>Nice Gallery</span>
+        </a>
+    </li>
+</ul>
+
+<MudAppBar Class="menu-app-bar" Color="Color.Primary" Elevation="0">
+    <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@ToggleDrawer" />
+    <MudSpacer />
+    <MudIconButton Icon="@Icons.Custom.Brands.GitHub" Color="Color.Inherit" Href="" Target="_blank" />
+</MudAppBar>
+<MudDrawer @bind-Open="@_open" Elevation="1" Variant="@DrawerVariant.Responsive">
+    <MudDrawerHeader>
+        <MudText Typo="Typo.h6">My App</MudText>
+    </MudDrawerHeader>
+    <MudNavMenu>
+        <MudNavLink Match="NavLinkMatch.All">Store</MudNavLink>
+        <MudNavLink Match="NavLinkMatch.All">Library</MudNavLink>
+        <MudNavLink Match="NavLinkMatch.All">Community</MudNavLink>
+    </MudNavMenu>
+</MudDrawer>
+
+<style>
+
+
+    /* Reset e Configurações Gerais */
+    *,
+    *:after,
+    *:before {
+        box-sizing: border-box;
+    }
+
+
+
+    /* Estilo para lista */
+    ul {
+        z-index: 1;
+        left: 0;
+        /* top: 62px; */
+        height: 100vh;
+        list-style: none;
+        position: fixed;
+        padding: 0.3rem;
+        background-color: #1ec8a5;
+        display: flex;
+        width: 58px;
+        flex-direction: column;
+        /*  justify-content: space-between;*/
+        /* padding-bottom: 70px; */
+    }
+
+    li {
+        & + li
+
     {
-        collapseNavMenu = !collapseNavMenu;
+        margin-top: 0.75rem;
+    }
+
+    /*        &:nth-child(6) {
+                margin-top: 5rem;
+                padding-top: 1.25rem;
+                border-top: 1px solid #363664;
+            }*/
+    }
+
+    /* Links */
+    a {
+        color: #FFF;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 3rem;
+        height: 3rem;
+        border-radius: 8px;
+        position: relative;
+        transition: background-color 0.15s ease;
+        &:hover, &:focus, &.active
+
+    {
+        background-color: #000;
+        outline: none;
+    }
+
+    /* Ícone */
+    i {
+        font-size: 1.375rem;
+    }
+
+    /* Tooltip */
+    span {
+        position: absolute;
+        background-color: #000;
+        color: #FFF;
+        white-space: nowrap;
+        padding: 0.5rem 1rem;
+        border-radius: 6px;
+        left: calc(100% + 1.5rem);
+        transform: scale(0);
+        opacity: 0;
+        transform-origin: center left;
+        transition: transform 0.15s ease, opacity 0.15s ease;
+        &:before
+
+    {
+        content: "";
+        display: block;
+        width: 12px;
+        height: 12px;
+        background-color: #000;
+        position: absolute;
+        left: -5px;
+        top: 50%;
+        transform: translateY(-50%) rotate(45deg);
+    }
+
+    }
+
+    &:hover span {
+        transform: scale(1);
+        opacity: 1;
+    }
+
+    }
+
+    /* Detalhes */
+    details {
+        position: fixed;
+        bottom: 1rem;
+        right: 1rem;
+        color: #05043e;
+        display: flex;
+        flex-direction: column;
+        /* Conteúdo do dropdown */
+        div
+
+    {
+        background-color: #fff;
+        box-shadow: 0 5px 10px rgba(0, 0, 0, 0.15);
+        padding: 1.25rem;
+        border-radius: 8px;
+        position: absolute;
+        max-height: calc(100vh - 100px);
+        width: 400px;
+        max-width: calc(100vw - 2rem);
+        bottom: calc(100% + 1rem);
+        right: 0;
+        overflow: auto;
+        transform-origin: 100% 100%;
+        &::-webkit-scrollbar
+
+    {
+        width: 15px;
+        background-color: #fff;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: #ccc;
+        border-radius: 99em;
+        border: 5px solid #fff;
+    }
+
+    & > * + * {
+        margin-top: 0.75em;
+    }
+
+    pre {
+        background-color: #f9f9f9;
+        border: 1px solid #95a3b9;
+        border-radius: 6px;
+        font-family: monospace;
+        padding: 0.75em;
+        font-size: 0.875rem;
+        white-space: pre-line;
+    }
+
+    }
+
+    &[open] div {
+        animation: scale 0.25s ease;
+    }
+
+    }
+
+    /* Botão de sumário */
+    summary {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        padding: 0.625em 1.25em;
+        border-radius: 99em;
+        color: #fff;
+        background-color: #185adb;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        cursor: pointer;
+        transition: background-color 0.15s ease;
+        position: relative;
+        &::-webkit-details-marker
+
+    {
+        display: none;
+    }
+
+    &:hover,
+    &:focus {
+        background-color: #154ba1;
+    }
+
+    i {
+        font-size: 1.375em;
+        margin-left: 0.25em;
+    }
+
+    }
+</style>
+@code {
+    private bool _open = false;
+
+
+    private void ToggleDrawer()
+    {
+        _open = !_open;
     }
 }

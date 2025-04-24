@@ -4,6 +4,9 @@
     <TargetFramework>net9.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <Configurations>Debug;Release;Both</Configurations>
+      <DebugType>full</DebugType> 
+  <DebugSymbols>true</DebugSymbols> 
   </PropertyGroup>
 
   <ItemGroup>

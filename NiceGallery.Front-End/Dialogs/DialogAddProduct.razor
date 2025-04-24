@@ -1,0 +1,144 @@
+﻿@inject HttpClient Http
+
+<MudDialog Style="width: max-content !important;">
+    <TitleContent>
+        Adicionar produto
+    </TitleContent>
+    <DialogContent>
+        <div class="form">
+
+            <div class="flex-column">
+                <label>ID</label>
+            </div>
+            <div class="inputFormDisabled">
+                <MudIcon Icon="@Icons.Material.Filled.SupervisedUserCircle" />
+                <input type="text" class="inputStyle" value="@AddItem.Id" readonly />
+
+            </div>
+
+
+            <div class="flex-column mt-7">
+                <label>Nome do produto</label>
+            </div>
+            <div class="inputForm">
+                <MudIcon Icon="@Icons.Material.Filled.DriveFileRenameOutline" />
+                <input type="text" class="inputStyle" placeholder="Digite o nome do produto" @bind="AddItem.Name" required />
+            </div>
+
+
+            <div class="flex-column mt-7">
+                <label>Preço</label>
+            </div>
+            <div class="inputForm">
+                <MudIcon Icon="@Icons.Material.Filled.PriceChange" />
+                <MudNumericField T="decimal" @bind-Value="AddItem.Price" Required Min="0" />
+
+
+            </div>
+
+        </div>
+
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancelar</MudButton>
+        <MudButton Color="Color.Primary" OnClick="Submit">Adicionar</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+
+
+
+    // Define a propriedade que receberá o item editado
+    [Parameter]
+    public List<Product> Products { get; set; }
+
+
+
+    [Parameter]
+    public Product AddItem { get; set; }
+
+    [Inject]
+    private ISnackbar snackBar { get; set; }
+
+    [CascadingParameter]
+    private IMudDialogInstance MudDialog { get; set; }
+
+
+
+
+
+
+    protected override void OnInitialized()
+    {
+        AddItem ??= new Product();
+    }
+
+
+
+    private async void Submit()
+    {
+        if (ValidateItem(AddItem))
+        {
+            AddItem.Id = 0; // Garante que o ID será gerado no backend
+
+            try
+            {
+                var response = await Http.PostAsJsonAsync("https://localhost:7097/api/produtos", AddItem);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    ShowSuccessMessage("Item adicionado com sucesso!");
+                    MudDialog.Close(DialogResult.Ok(AddItem));
+                }
+                else
+                {
+                    var errorMsg = await response.Content.ReadAsStringAsync();
+                    ShowErrorMessage($"Erro ao adicionar item: {errorMsg}");
+                }
+            }
+            catch (Exception ex)
+            {
+                ShowErrorMessage($"Erro interno: {ex.Message}");
+            }
+        }
+        else
+        {
+            ShowErrorMessage("Preencha todos os campos obrigatórios!");
+        }
+
+        StateHasChanged();
+
+    }
+
+
+
+    private void ShowSuccessMessage(string message)
+    {
+        snackBar.Add(message, Severity.Success);
+    }
+
+    private bool ValidateItem(Product item)
+    {
+        return item != null &&
+               !string.IsNullOrWhiteSpace(item.Name) &&
+               item.Price > 0;
+    }
+
+
+
+
+    // Método para exibir mensagens de erro ao usuário
+    private void ShowErrorMessage(string message)
+    {
+        // Implemente a lógica para mostrar a mensagem de erro, pode ser um MudSnackbar, dialog, etc.
+        snackBar.Add(message, Severity.Error);
+    }
+
+
+
+    private void Cancel()
+    {
+        MudDialog.Cancel(); // Fecha o diálogo sem fazer nada
+    }
+}

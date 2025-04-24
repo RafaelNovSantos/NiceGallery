@@ -1,25 +1,121 @@
 ﻿@inherits LayoutComponentBase
-@* Required *@
-<MudThemeProvider />
+
+
+<MudThemeProvider Theme="@_theme" IsDarkMode="_isDarkMode" />
 <MudPopoverProvider />
-
-@* Needed for dialogs *@
 <MudDialogProvider />
-
-@* Needed for snackbars *@
 <MudSnackbarProvider />
-<div class="page">
-    <div class="sidebar">
-        <NavMenu />
-    </div>
+<MudLayout>
 
-    <main>
-        <div class="top-row px-4">
-            <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
-        </div>
 
-        <article class="content px-4">
-            @Body
-        </article>
-    </main>
+    <NavMenu>
+
+    </NavMenu>
+
+
+    <MudMainContent Class="layout-left" Style="height: 100vh;
+
+    ">
+        @Body
+    </MudMainContent>
+</MudLayout>
+
+
+<div id="blazor-error-ui">
+    An unhandled error has occurred.
+    <a href="" class="reload">Reload</a>
+    <a class="dismiss">🗙</a>
 </div>
+
+
+
+
+@code {
+    private bool _drawerOpen = false;
+    private bool _isDarkMode = false;
+    private MudTheme? _theme = null;
+
+    public Origin Origin { get; set; } = Origin.BottomRight;
+    public int? BadgeContent { get; set; }
+    private bool _open = false;
+
+    [Parameter]
+    public string ContactId { get; set; } // ID do contato (usado na barra de título)
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        BadgeContent = 2;
+        _theme = new MudTheme()
+            {
+                PaletteLight = _lightPalette,  // Sua paleta de cores clara
+                PaletteDark = _darkPalette,    // Sua paleta de cores escuras
+                LayoutProperties = new LayoutProperties(),
+                
+
+            };
+    }
+
+
+
+
+    private void DrawerToggle()
+    {
+        _drawerOpen = !_drawerOpen;
+    }
+
+    private void DarkModeToggle()
+    {
+        _isDarkMode = !_isDarkMode;
+    }
+
+    private readonly PaletteLight _lightPalette = new()
+        {
+            Primary = "#1ec8a5",
+            Black = "#110e2d",
+            AppbarText = "#424242",
+            AppbarBackground = "rgba(255,255,255,0.8)",
+            DrawerBackground = "#ffffff",
+            GrayLight = "#e8e8e8",
+            GrayLighter = "#f9f9f9",
+            Secondary = "#000",
+            SecondaryContrastText = "#000",
+            Tertiary = "#e6e6e6",
+            TertiaryContrastText = "#000",
+        };
+
+    private readonly PaletteDark _darkPalette = new()
+        {
+            Primary = "#1ec8a5",
+            Surface = "#1e1e2d",
+            Background = "#1a1a27",
+            BackgroundGray = "#151521",
+            AppbarText = "#92929f",
+            AppbarBackground = "rgba(26,26,39,0.8)",
+            DrawerBackground = "#1a1a27",
+            ActionDefault = "#74718e",
+            ActionDisabled = "#9999994d",
+            ActionDisabledBackground = "#605f6d4d",
+            TextPrimary = "#b2b0bf",
+            TextSecondary = "#000",
+            TextDisabled = "#ffffff33",
+            DrawerIcon = "#92929f",
+            DrawerText = "#92929f",
+            GrayLight = "#2a2833",
+            GrayLighter = "#1e1e2d",
+            Info = "#4a86ff",
+            Success = "#3dcb6c",
+            Warning = "#ffb545",
+            Error = "#ff3f5f",
+            LinesDefault = "#33323e",
+            TableLines = "#33323e",
+            Divider = "#292838",
+            OverlayLight = "#1e1e2d80",
+        };
+
+    public string DarkLightModeButtonIcon => _isDarkMode switch
+    {
+        true => Icons.Material.Rounded.AutoMode,
+        false => Icons.Material.Outlined.DarkMode,
+    };
+}

@@ -1,0 +1,285 @@
+﻿
+    /* From Uiverse.io by vinodjangid07 */
+.bookmarkBtn {
+    width: 100%;
+    max-width: 130px;
+    height: 40px;
+    border-radius: 40px;
+    border: 1px solid rgba(255, 255, 255, 0.349);
+    background-color: #1ec8a5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition-duration: 0.3s;
+    overflow: hidden;
+}
+
+.IconContainer {
+    width: 30px;
+    height: 30px;
+    background: #fff;
+    border-radius: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    z-index: 2;
+    transition-duration: 0.3s;
+}
+
+.InputContainer {
+    height: 40px;
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+    background-color: rgb(255, 255, 255);
+    border-radius: 10px;
+    overflow: hidden;
+    padding-right: 15px;
+    /*margin: 20px;*/
+}
+
+.border {
+    height: 40%;
+    width: 1.3px;
+    background-color: rgb(223, 223, 223);
+}
+
+.searchinput {
+    width: 100%;
+    height: 100%;
+    border: none;
+    outline: none;
+    font-size: 0.9em;
+    caret-color: #000;
+    padding-left: 20px;
+}
+
+.labelforsearch {
+    margin: 10px;
+    padding-top: 4px;
+}
+
+.searchIcon path {
+    fill: rgb(114, 114, 114);
+}
+
+.searchIcon {
+    width: 13px;
+}
+
+.icon {
+    border-radius: 1px;
+}
+
+.text {
+    margin: 10px;
+    height: 100%;
+    width: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    z-index: 1;
+    transition-duration: 0.3s;
+    font-size: 1.04em;
+}
+
+.bookmarkBtn:hover .IconContainer {
+    width: 90px;
+    transition-duration: 0.3s;
+}
+
+.bookmarkBtn:hover .text {
+    transform: translate(10px);
+    display:  none;
+    transition-duration: 0.3s;
+}
+
+.bookmarkBtn:active {
+    transform: scale(0.95);
+    transition-duration: 0.3s;
+}
+
+
+
+
+.labelforsearch {
+  
+    margin: 10px;
+    padding-top: 4px;
+}
+
+.searchIcon {
+    width: 13px;
+}
+
+.border {
+    height: 40%;
+    width: 1.3px;
+    background-color: rgb(223, 223, 223);
+}
+
+.micIcon {
+    width: 12px;
+}
+
+.micButton {
+    padding: 0px 15px 0px 12px;
+    border: none;
+    background-color: transparent;
+    height: 40px;
+    cursor: pointer;
+    transition-duration: .3s;
+}
+
+.searchIcon path {
+    fill: rgb(114, 114, 114);
+}
+
+.micIcon path {
+    fill: rgb(255, 81, 0);
+}
+
+.micButton:hover {
+    background-color: rgb(255, 230, 230);
+    transition-duration: .3s;
+}
+body {
+    background-color: #f7f9fc;
+    margin: 0;
+}
+
+h1 {
+    color: #333;
+    font-size: 24px;
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.mud-table-sort-label:hover{
+    color: white;
+}
+.tableEdit {
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1) !important;
+    text-align: center;
+    margin: 20px;
+    background-color: #fff !important;
+    border-radius: 15px !important;
+    overflow: hidden;
+}
+
+main {
+    align-content: start !important;
+}
+
+
+.inputStyle {
+    background-color: transparent;
+    margin-left: 10px;
+    border-radius: 10px;
+    border: none;
+    width: 85%;
+    height: 100%;
+}
+
+    .inputStyle:focus {
+        outline: none;
+    }
+
+
+.inputForm {
+    border: 1.5px solid #999999;
+    border-radius: 10px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    padding-left: 10px;
+    transition: 0.2s ease-in-out;
+}
+
+.inputFormDisabled {
+    border: 1.5px solid #99999929;
+    border-radius: 10px;
+    background-color: #fafafa;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    padding-left: 10px;
+    transition: 0.2s ease-in-out;
+}
+
+.action-btn {
+    cursor: pointer;
+    font-size: 18px;
+    border-radius: 50%;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.action-btn:hover {
+    transform: scale(1.15);
+}
+
+th {
+    background-color: #1ec8a5;
+    color: #fff !important;
+    text-align: center !important;
+    font-weight: 600;
+}
+
+
+
+td {
+    color: #555;
+    text-align: center !important;
+    font-weight: 500;
+    vertical-align: middle;
+    padding: 16px 24px;
+    transition: background-color 0.3s ease;
+}
+
+tbody tr:nth-child(odd) {
+    background-color: #fff;
+}
+
+tbody tr:nth-child(even) {
+    background-color: #f7f9fc;
+}
+
+tr:hover {
+    background-color: #f8f9fc;
+}
+
+/*  input {
+      border: 2px solid transparent !important;
+      width: 15em !important;
+      height: 1.5em !important;
+      outline: none !important;
+      overflow: hidden !important;
+      background-color: #F3F3F3 !important;
+      border-radius: 10px !important;
+      transition: all 0.5s !important;
+      text-align: center !important;
+  }
+
+  input:hover,
+  input:focus {
+      border: 2px solid #4A9DEC !important;
+      box-shadow: 0px 0px 0px 7px rgb(74, 157, 236, 20%) !important;
+      background-color: white !important;
+  }
+
+*/
+
+
+.mud-input-control > .mud-input-control-input-container {
+    display: unset !important;
+}
+
+.mud-input-control {
+
+   /* flex: unset;*/
+
+}

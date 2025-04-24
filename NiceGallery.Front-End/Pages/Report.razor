@@ -1,0 +1,61 @@
+﻿@page "/report"
+@inject HttpClient Http
+
+
+<MudContainer  MaxWidth="MaxWidth.False" Style="overflow: auto; height: 100vh;">
+    <MudText Class="mt-4" Typo="Typo.h3" Align="Align.Center" GutterBottom="true">Departamentos</MudText>
+    <MudText Class="mb-6" Align="Align.Center">Departamentos são usados para organizar usuários, direcionar o chatbot e facilitar transferências dentro do chatPro. Eles também podem ser utilizados em widgets.</MudText>
+
+
+       
+
+        <div  class="tableEdit p-0">
+        @if (carregando)
+        {
+            <div class="d-flex justify-center">
+                <MudProgressCircular Indeterminate="true" Size="Size.Large" Color="Color.Primary" />
+            </div>
+        }
+        else if (produtos is null || !produtos.Any())
+        {
+            <MudAlert Severity="Severity.Info">Nenhum produto encontrado.</MudAlert>
+        }
+        else
+        {
+            <MudTable Items="produtos" Hover="true" Bordered="true" Striped="true" Elevation="0">
+                <HeaderContent>
+                    <MudTh>Nome</MudTh>
+                    <MudTh>Preço</MudTh>
+                </HeaderContent>
+                <RowTemplate>
+                    <MudTd DataLabel="Nome">@context.Name</MudTd>
+                    <MudTd DataLabel="Preço">@("R$ " + @context.Price.ToString("N2"))</MudTd>
+                </RowTemplate>
+            </MudTable>
+        }
+
+       
+    </div>
+</MudContainer>
+
+@code {
+    private List<Product>? produtos;
+    private bool carregando = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            produtos = await Http.GetFromJsonAsync<List<Product>>("https://localhost:7097/api/produtos");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Erro ao carregar produtos: {ex.Message}");
+        }
+        finally
+        {
+            carregando = false;
+        }
+    }
+}
+
