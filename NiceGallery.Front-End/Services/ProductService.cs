@@ -1,5 +1,7 @@
 ﻿using NiceGallery.Web.Interfaces;
 using NiceGallery.Web.Models;
+using System.Net.Http;
+using System.Net;
 using System.Net.Http.Json;
 
 public class ProductService : IProductService
@@ -13,9 +15,16 @@ public class ProductService : IProductService
 
     public async Task<List<Product>> GetProductsAsync()
     {
-        return await _httpClient.GetFromJsonAsync<List<Product>>("https://localhost:7097/api/produtos");
+        var response = await _httpClient.GetAsync("https://localhost:7097/api/produtos");
 
+        if (response.StatusCode == HttpStatusCode.NotFound || response.StatusCode == HttpStatusCode.NoContent)
+            return new List<Product>();
+
+        response.EnsureSuccessStatusCode();
+
+        return await response.Content.ReadFromJsonAsync<List<Product>>() ?? new List<Product>();
     }
+
 
     public async Task<bool> UpdateProductAsync(Product product)
     {

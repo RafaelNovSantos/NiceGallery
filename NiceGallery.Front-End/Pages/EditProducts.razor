@@ -118,11 +118,11 @@
         try
         {
             products = await ProductService.GetProductsAsync();
-        }
-        catch (HttpRequestException httpEx) when (httpEx.StatusCode == System.Net.HttpStatusCode.NotFound)
-        {
-            products = new List<Product>(); 
-            Snackbar.Add("Nenhum produto encontrado. Adicione um novo produto clicando em \"Adicionar\".", Severity.Warning);
+
+            if (products.Count == 0)
+            {
+                Snackbar.Add("Nenhum produto encontrado. Adicione um novo produto clicando em \"Adicionar\".", Severity.Warning);
+            }
         }
         catch (Exception ex)
         {
@@ -133,6 +133,7 @@
             StateHasChanged();
         }
     }
+
 
 
 

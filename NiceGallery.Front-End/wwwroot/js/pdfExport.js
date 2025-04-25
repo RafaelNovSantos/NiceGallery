@@ -1,8 +1,8 @@
-﻿window.exportReportToPdf = (produtos) => {
+﻿window.exportReportToPdf = (products) => {
     const doc = new jsPDF();
 
     const headers = [["Nome", "Preço"]];
-    const rows = produtos.map(p => [p.name, "R$ " + p.price.toFixed(2)]);
+    const rows = products.map(p => [p.name, "R$ " + p.price.toFixed(2)]);
 
     doc.autoTable({
         head: headers,

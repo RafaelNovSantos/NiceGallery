@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using NiceGallery.Api.Data;
+using NiceGallery.Api.DTOs;
 using NiceGallery.Api.Models;
 
 
@@ -28,7 +29,7 @@ namespace NiceGallery.Api.Controllers
                 var produtos = await _context.Produtos.ToListAsync();
                 if (produtos == null || !produtos.Any())
                 {
-                    return NotFound(new { mensagem = "Nenhum produto encontrado." });
+                    return NoContent();
                 }
 
                 return Ok(produtos);
@@ -63,16 +64,24 @@ namespace NiceGallery.Api.Controllers
 
         // POST: api/Produtos
         [HttpPost]
-        public async Task<IActionResult> PostProduto(Product produto)
+        public async Task<IActionResult> PostProduto([FromBody] CreateProductDto dto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
             try
             {
+                // Criar o produto com os dados do DTO
+                var produto = new Product
+                {
+                    Name = dto.Name,
+                    Price = dto.Price
+                };
+
                 _context.Produtos.Add(produto);
                 await _context.SaveChangesAsync();
 
+                // Retornar o produto com o id gerado
                 return CreatedAtAction(nameof(GetProduto), new { id = produto.Id }, new
                 {
                     mensagem = "Produto cadastrado com sucesso!",
@@ -85,6 +94,7 @@ namespace NiceGallery.Api.Controllers
                 return StatusCode(500, new { mensagem = "Erro interno ao salvar o produto. Por favor, tente novamente mais tarde." });
             }
         }
+
 
 
         // PUT: api/Produtos/5

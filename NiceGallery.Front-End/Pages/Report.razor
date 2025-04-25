@@ -7,10 +7,6 @@
     <MudText Class="mb-6" Align="Align.Center">Relatório de todos os produtos cadastrados.</MudText>
 
 
-    <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Download" OnClick="@ExportarParaPdf">
-        Exportar PDF
-    </MudButton>
-
 
 
         <div  class="tableEdit p-0">
@@ -22,7 +18,13 @@
         }
         else if (products is null || !products.Any())
         {
-            <MudAlert Severity="Severity.Info">Nenhum produto encontrado.</MudAlert>
+            <MudAlert Class="justify-center;" Style="flex:inherit; justify-content: center;" Severity="Severity.Info">
+                Nenhum produto encontrado, Vá para a página de gerenciamento de produtos, para cadastrar um novo produto.
+                <div style="width: 100%; justify-content: center; display: flex;"><MudLink Style="width: 20%" Href="/editproducts" >Clique aqui.
+                </MudLink>
+                </div>
+            </MudAlert>
+
         }
         else
         {
@@ -39,6 +41,14 @@
                         </label>
 
                     </div>
+
+                    <button class="bookmarkBtn ma-1" @onclick="ExportarParaPdf">
+
+                        <span class="IconContainer">
+                            <MudIcon Color="Color.Dark" Icon="@Icons.Material.Filled.PictureAsPdf"></MudIcon>
+                        </span>
+                        <p class="text">Exportar PDF</p>
+                    </button>
                 </ToolBarContent>
                 <HeaderContent>
                     <MudTh>
@@ -59,7 +69,10 @@
        
     </div>
 </MudContainer>
-
+<style>
+    .mud-alert-position {
+        flex: inherit !important;}
+</style>
 @code {
     private string criterion = "";
     private List<Product>? products;
