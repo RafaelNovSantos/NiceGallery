@@ -56,8 +56,12 @@
         </ToolBarContent>
 
         <HeaderContent>
-            <MudTh>Nome</MudTh>
-            <MudTh>Preço</MudTh>
+            <MudTh>
+                <MudTableSortLabel SortBy="new Func<Product, object>(x => x.Name)">Nome</MudTableSortLabel>
+            </MudTh>
+            <MudTh>
+                <MudTableSortLabel SortBy="new Func<Product, object>(x => x.Price)">Preço</MudTableSortLabel>
+            </MudTh>
         </HeaderContent>
 
         <RowTemplate>
@@ -133,13 +137,13 @@
 
 
 
-    private bool Search(Product produto)
+    private bool Search(Product product)
     {
         if (string.IsNullOrWhiteSpace(criterion))
             return true;
 
-        return produto.Name?.Contains(criterion, StringComparison.OrdinalIgnoreCase) == true
-               || produto.Price.ToString().Contains(criterion);
+        return product.Name?.Contains(criterion, StringComparison.OrdinalIgnoreCase) == true
+               || product.Price.ToString().Contains(criterion);
     }
 
 

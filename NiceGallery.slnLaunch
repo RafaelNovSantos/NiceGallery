@@ -1,0 +1,17 @@
+[
+  {
+    "Name": "Start API and Front",
+    "Projects": [
+      {
+        "Path": "NiceGallery.Front-End\\NiceGallery.Web.csproj",
+        "Action": "Start",
+        "DebugTarget": "https"
+      },
+      {
+        "Path": "NiceGallery.Api\\NiceGallery.Api.csproj",
+        "Action": "Start",
+        "DebugTarget": "https"
+      }
+    ]
+  }
+]

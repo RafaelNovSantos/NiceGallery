@@ -1,31 +1,53 @@
 ﻿@page "/report"
 @inject HttpClient Http
-
+@inject IJSRuntime JS
 
 <MudContainer  MaxWidth="MaxWidth.False" Style="overflow: auto; height: 100vh;">
     <MudText Class="mt-4" Typo="Typo.h3" Align="Align.Center" GutterBottom="true">📋 Relatório</MudText>
     <MudText Class="mb-6" Align="Align.Center">Relatório de todos os produtos cadastrados.</MudText>
 
 
-       
+    <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Download" OnClick="@ExportarParaPdf">
+        Exportar PDF
+    </MudButton>
+
+
 
         <div  class="tableEdit p-0">
-        @if (carregando)
+        @if (loading)
         {
             <div class="d-flex justify-center">
                 <MudProgressCircular Indeterminate="true" Size="Size.Large" Color="Color.Primary" />
             </div>
         }
-        else if (produtos is null || !produtos.Any())
+        else if (products is null || !products.Any())
         {
             <MudAlert Severity="Severity.Info">Nenhum produto encontrado.</MudAlert>
         }
         else
         {
-            <MudTable Items="produtos" Hover="true" Bordered="true" Striped="true" Elevation="0">
+            <MudTable Filter="Search" Id="report-table" Items="products" Hover="true" Bordered="true" Striped="true" Elevation="1">
+                <ToolBarContent>
+                    <div class="InputContainer ma-5">
+                        <input type="text" placeholder="Procurar..."
+                               @bind="criterion"
+                               name="text" class="searchinput" id="input">
+                        <div class="border"></div>
+
+                        <label for="input" class="labelforsearch">
+                            <svg viewBox="0 0 512 512" class="searchIcon"><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"></path></svg>
+                        </label>
+
+                    </div>
+                </ToolBarContent>
                 <HeaderContent>
-                    <MudTh>Nome</MudTh>
-                    <MudTh>Preço</MudTh>
+                    <MudTh>
+                        <MudTableSortLabel SortBy="new Func<Product, object>(x => x.Name)">Nome</MudTableSortLabel>
+                    </MudTh>
+                    <MudTh>
+                        <MudTableSortLabel SortBy="new Func<Product, object>(x => x.Price)">Preço</MudTableSortLabel>
+                    </MudTh>
+
                 </HeaderContent>
                 <RowTemplate>
                     <MudTd DataLabel="Nome">@context.Name</MudTd>
@@ -39,14 +61,15 @@
 </MudContainer>
 
 @code {
-    private List<Product>? produtos;
-    private bool carregando = true;
+    private string criterion = "";
+    private List<Product>? products;
+    private bool loading = true;
 
     protected override async Task OnInitializedAsync()
     {
         try
         {
-            produtos = await Http.GetFromJsonAsync<List<Product>>("https://localhost:7097/api/produtos");
+            products = await Http.GetFromJsonAsync<List<Product>>("https://localhost:7097/api/produtos");
         }
         catch (Exception ex)
         {
@@ -54,8 +77,24 @@
         }
         finally
         {
-            carregando = false;
+            loading = false;
         }
     }
+
+    private bool Search(Product product)
+    {
+        if (string.IsNullOrWhiteSpace(criterion))
+            return true;
+
+        return product.Name?.Contains(criterion, StringComparison.OrdinalIgnoreCase) == true
+               || product.Price.ToString().Contains(criterion);
+    }
+
+    private async Task ExportarParaPdf()
+    {
+        await JS.InvokeVoidAsync("exportReportToPdf", products);
+    }
+
+
 }
 
