@@ -11,7 +11,8 @@
 
     <MudTable T="Product" Items="@products"
     Filter="Search"
-              Loading="@_loading"
+    @ref="mudTable"
+    Loading="@_loading"
     Hover="true" Dense="true" Bordered="true"
     MultiSelection="true"
     RowEditCommit="SaveEditionProduct"
@@ -96,7 +97,7 @@
     private string criterion = "";
     private List<Product> products = new();
     private HashSet<Product> selectedItems = new();
-
+    private MudTable<Product> mudTable;
     public IReadOnlyList<Product> Products => products.AsReadOnly();
     public IReadOnlyCollection<Product> SelectedItems => selectedItems;
 
@@ -110,17 +111,27 @@
 
     private async Task LoadProducts()
     {
-
         try
         {
             products = await ProductService.GetProductsAsync();
-            StateHasChanged();
+        }
+        catch (HttpRequestException httpEx) when (httpEx.StatusCode == System.Net.HttpStatusCode.NotFound)
+        {
+            products = new List<Product>(); 
+            Snackbar.Add("Nenhum produto encontrado. Adicione um novo produto clicando em \"Adicionar\".", Severity.Warning);
         }
         catch (Exception ex)
         {
             Snackbar.Add("Erro ao carregar produtos: " + ex.Message, Severity.Error);
         }
+        finally
+        {
+            StateHasChanged();
+        }
     }
+
+
+
 
     private bool Search(Product produto)
     {
@@ -155,36 +166,49 @@
 
         if (isValid)
         {
-        
-        try
-        {
-            if (await ProductService.UpdateProductAsync(product))
+
+            try
             {
-                Snackbar.Add("Produto atualizado com sucesso!", Severity.Success);
-                await LoadProducts();
+                if (await ProductService.UpdateProductAsync(product))
+                {
+                    Snackbar.Add("Produto atualizado com sucesso!", Severity.Success);
+                    await LoadProducts();
+                }
+                else
+                {
+                    Snackbar.Add("Erro ao atualizar o produto.", Severity.Error);
+                }
             }
-            else
+            catch (Exception ex)
             {
-                Snackbar.Add("Erro ao atualizar o produto.", Severity.Error);
+                Console.WriteLine($"Exceção ao atualizar produto: {ex.Message}");
             }
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Exceção ao atualizar produto: {ex.Message}");
-        }
         }
     }
 
     private async void DeleteSelectedItems()
     {
-        foreach (var item in selectedItems)
+        if(selectedItems.Count > 0){
+            foreach (var item in selectedItems)
+            {
+                await ProductService.DeleteProductAsync(item.Id);
+            }
+            Snackbar.Add("Produtos deletados com sucesso!", Severity.Success);
+            selectedItems.Clear();
+        }
+        else
         {
-            await ProductService.DeleteProductAsync(item.Id);
+            Snackbar.Add("Selecione um produto para deletar!", Severity.Warning);
         }
 
-        await LoadProducts();
-        selectedItems.Clear();
-        StateHasChanged();
+        await LoadProducts(); // Recarregar os produtos da fonte de dados
+        await mudTable.ReloadServerData(); // Recarregar a tabela
+
+    }
+
+    private async Task ReloadTable()
+    {
+        await mudTable.ReloadServerData(); // Isso vai recarregar os dados
     }
 
 

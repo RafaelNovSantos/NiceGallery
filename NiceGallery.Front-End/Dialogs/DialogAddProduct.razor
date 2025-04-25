@@ -1,15 +1,13 @@
 ﻿@inject HttpClient Http
 
 <MudDialog Style="width: max-content !important;">
-    <TitleContent>
-        Adicionar produto
-    </TitleContent>
+
     <DialogContent>
         <div class="form">
 
         
 
-            <div class="flex-column mt-7">
+            <div class="flex-column ">
                 <label>Nome do produto</label>
             </div>
             <div class="inputForm">
@@ -41,7 +39,7 @@
 
 
 
-    // Define a propriedade que receberá o item editado
+
     [Parameter]
     public List<Product> Products { get; set; }
 

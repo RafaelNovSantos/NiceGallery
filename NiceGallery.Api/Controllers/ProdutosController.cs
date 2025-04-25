@@ -49,11 +49,10 @@ namespace NiceGallery.Api.Controllers
                 var produto = await _context.Produtos.FindAsync(id);
 
                 if (produto == null)
-                {
                     return NotFound(new { mensagem = "Produto não encontrado." });
-                }
 
                 return Ok(produto);
+
             }
             catch (Exception ex)
             {

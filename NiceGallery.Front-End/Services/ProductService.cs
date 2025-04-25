@@ -14,6 +14,7 @@ public class ProductService : IProductService
     public async Task<List<Product>> GetProductsAsync()
     {
         return await _httpClient.GetFromJsonAsync<List<Product>>("https://localhost:7097/api/produtos");
+
     }
 
     public async Task<bool> UpdateProductAsync(Product product)
