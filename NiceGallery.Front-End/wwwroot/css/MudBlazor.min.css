@@ -10598,7 +10598,7 @@ ul {
 
 .mud-table-toolbar {
     height: max-content;
-    background: #1ec8a5 !important;
+    background: #d10246 !important;
     color: #fff;
     padding-left: 16px;
     padding-right: 8px;
@@ -10615,7 +10615,6 @@ ul {
 
 @media(min-width: 649px) {
     .MudTextSize {
-        font-family: Poppins !important;
         font-size: 25px !important;
     }
 }

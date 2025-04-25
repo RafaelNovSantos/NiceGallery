@@ -22,8 +22,8 @@
 
 
 <div id="blazor-error-ui">
-    An unhandled error has occurred.
-    <a href="" class="reload">Reload</a>
+   Ocorreu um erro.
+    <a href="" class="reload">Recarregar</a>
     <a class="dismiss">🗙</a>
 </div>
 
@@ -51,7 +51,14 @@
                 PaletteLight = _lightPalette,  // Sua paleta de cores clara
                 PaletteDark = _darkPalette,    // Sua paleta de cores escuras
                 LayoutProperties = new LayoutProperties(),
-                
+                Typography = new Typography()
+                {
+                    Default = new DefaultTypography()
+                    {
+                        FontFamily = new[] { "Signika", "sans-serif" }
+                    }
+                }
+
 
             };
     }
@@ -71,7 +78,7 @@
 
     private readonly PaletteLight _lightPalette = new()
         {
-            Primary = "#1ec8a5",
+            Primary = "#d10246",
             Black = "#110e2d",
             AppbarText = "#424242",
             AppbarBackground = "rgba(255,255,255,0.8)",
@@ -82,11 +89,12 @@
             SecondaryContrastText = "#000",
             Tertiary = "#e6e6e6",
             TertiaryContrastText = "#000",
+            
         };
 
     private readonly PaletteDark _darkPalette = new()
         {
-            Primary = "#1ec8a5",
+            Primary = "#d10246",
             Surface = "#1e1e2d",
             Background = "#1a1a27",
             BackgroundGray = "#151521",

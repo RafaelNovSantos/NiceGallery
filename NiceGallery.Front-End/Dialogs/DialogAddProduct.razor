@@ -7,15 +7,7 @@
     <DialogContent>
         <div class="form">
 
-            <div class="flex-column">
-                <label>ID</label>
-            </div>
-            <div class="inputFormDisabled">
-                <MudIcon Icon="@Icons.Material.Filled.SupervisedUserCircle" />
-                <input type="text" class="inputStyle" value="@AddItem.Id" readonly />
-
-            </div>
-
+        
 
             <div class="flex-column mt-7">
                 <label>Nome do produto</label>
@@ -31,7 +23,7 @@
             </div>
             <div class="inputForm">
                 <MudIcon Icon="@Icons.Material.Filled.PriceChange" />
-                <MudNumericField T="decimal" @bind-Value="AddItem.Price" Required Min="0" />
+                <MudNumericField T="decimal" @bind-Value="AddItem.Price" Required Min="1" />
 
 
             </div>
@@ -102,9 +94,15 @@
                 ShowErrorMessage($"Erro interno: {ex.Message}");
             }
         }
+        else if (AddItem.Price < 1)
+        {
+            ShowErrorMessage("O produto não pode ter o valor zerado!");
+
+        }
         else
         {
             ShowErrorMessage("Preencha todos os campos obrigatórios!");
+
         }
 
         StateHasChanged();
@@ -131,7 +129,7 @@
     // Método para exibir mensagens de erro ao usuário
     private void ShowErrorMessage(string message)
     {
-        // Implemente a lógica para mostrar a mensagem de erro, pode ser um MudSnackbar, dialog, etc.
+       
         snackBar.Add(message, Severity.Error);
     }
 
@@ -139,6 +137,6 @@
 
     private void Cancel()
     {
-        MudDialog.Cancel(); // Fecha o diálogo sem fazer nada
+        MudDialog.Cancel();
     }
 }

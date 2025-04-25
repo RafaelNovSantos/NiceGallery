@@ -1,20 +1,20 @@
 ﻿@page "/editproducts"
-@inject HttpClient Http
 
 
-<MudContainer  MaxWidth="MaxWidth.False"   Style="overflow: auto">
-    <MudText Class="mt-4" Typo="Typo.h3" Align="Align.Center" GutterBottom="true">📦 Produtos disponíveis</MudText>
-    <MudText Class="mb-6" Align="Align.Center">Departamentos são usados para organizar usuários, direcionar o chatbot e facilitar transferências dentro do chatPro. Eles também podem ser utilizados em widgets.</MudText>
-
-
+<MudContainer  MaxWidth="MaxWidth.False"   Style="overflow: auto; height: 100vh;">
+    <MudText Class="mt-4" Typo="Typo.h3" Align="Align.Center" GutterBottom="true">📦 Gerenciar Produtos.</MudText>
+    <MudText Class="mb-6" Align="Align.Center">Adicione um novo produto clicando no botão "Adicionar", logo abaixo.</MudText>
 
 
 
-    <MudTable T="Product" Items="@produtos"
-    Filter="Procurar"
+
+
+    <MudTable T="Product" Items="@products"
+    Filter="Search"
+              Loading="@_loading"
     Hover="true" Dense="true" Bordered="true"
     MultiSelection="true"
-    RowEditCommit="SalvarEdicaoProduto"
+    RowEditCommit="SaveEditionProduct"
     Class="tableEdit"
     @bind-SelectedItems="selectedItems"
     EditTrigger="TableEditTrigger.EditButton"
@@ -24,10 +24,10 @@
 
 
         <ToolBarContent>
-            <MudText Class="MudTextSize">Gerenciar Produtos</MudText>
+
             <div class="InputContainer ma-5">
                 <input type="text" placeholder="Procurar..."
-                @bind="criterio"
+                @bind="criterion"
                 name="text" class="searchinput" id="input">
                 <div class="border"></div>
 
@@ -68,11 +68,19 @@
 
         <RowEditingTemplate>
             <MudTd><MudTextField @bind-Value="context.Name" Required Label="Nome do Produto" /></MudTd>
-            <MudTd><MudNumericField @bind-Value="context.Price" Required Label="Preço" DecimalSeparator="','" /></MudTd>
+            <MudTd>
+                <MudNumericField @bind-Value="context.Price"
+                Label="Preço"
+                DecimalSeparator=","
+
+                Required="true"
+                OnBlur="() => ValidatePrice(context)" />
+
+            </MudTd>
         </RowEditingTemplate>
 
         <PagerContent>
-            <MudTablePager PageSizeOptions="[5,10,25]" RowsPerPageString="Produtos por página:" />
+            <MudTablePager PageSizeOptions="[10, 20, 50, 100]" RowsPerPageString="Produtos por página:" />
         </PagerContent>
     </MudTable>
 
@@ -84,38 +92,43 @@
 
 
 @code {
-    private List<Product> produtos = new();
+    private bool _loading;
+    private string criterion = "";
+    private List<Product> products = new();
     private HashSet<Product> selectedItems = new();
-    private string criterio = "";
+
+    public IReadOnlyList<Product> Products => products.AsReadOnly();
+    public IReadOnlyCollection<Product> SelectedItems => selectedItems;
+
 
     protected override async Task OnInitializedAsync()
     {
-        await CarregarProdutos();
+        _loading = true;
+        await LoadProducts();
+        _loading = false;
     }
 
-    private async Task CarregarProdutos()
+    private async Task LoadProducts()
     {
+
         try
         {
-
-            produtos.Clear();
-
-            produtos = await Http.GetFromJsonAsync<List<Product>>("https://localhost:7097/api/produtos");
+            products = await ProductService.GetProductsAsync();
             StateHasChanged();
         }
         catch (Exception ex)
         {
-            Console.WriteLine("Erro ao carregar produtos: " + ex.Message);
+            Snackbar.Add("Erro ao carregar produtos: " + ex.Message, Severity.Error);
         }
     }
 
-    private bool Procurar(Product produto)
+    private bool Search(Product produto)
     {
-        if (string.IsNullOrWhiteSpace(criterio))
+        if (string.IsNullOrWhiteSpace(criterion))
             return true;
 
-        return produto.Name?.Contains(criterio, StringComparison.OrdinalIgnoreCase) == true
-               || produto.Price.ToString().Contains(criterio);
+        return produto.Name?.Contains(criterion, StringComparison.OrdinalIgnoreCase) == true
+               || produto.Price.ToString().Contains(criterion);
     }
 
 
@@ -128,65 +141,69 @@
 
         if (!result.Canceled && result.Data is Product newItem)
         {
-
-            await CarregarProdutos();
-
-
-
+            await LoadProducts();
         }
     }
 
 
-    private async void DeleteSelectedItems()
+    private async void SaveEditionProduct(object productObj)
     {
-        foreach (var item in selectedItems)
+
+        var product = productObj as Product;
+
+        bool isValid = await ValidatePrice(product);
+
+        if (isValid)
         {
-            await Http.DeleteAsync($"https://localhost:7097/api/produtos/{item.Id}");
-        }
-
-        await CarregarProdutos();
-
-
-        selectedItems = new HashSet<Product>();
-
-        StateHasChanged();
-
-       
-    }
-
-
-    private async void SalvarEdicaoProduto(object produtoObj)
-    {
-        var produto = produtoObj as Product;
-
-        if (produto == null)
-        {
-            Console.WriteLine("Produto não encontrado na edição.");
-            return;
-        }
-
+        
         try
         {
-            var response = await Http.PutAsJsonAsync($"https://localhost:7097/api/produtos/{produto.Id}", produto);
-            if (response.IsSuccessStatusCode)
+            if (await ProductService.UpdateProductAsync(product))
             {
                 Snackbar.Add("Produto atualizado com sucesso!", Severity.Success);
-                await CarregarProdutos();
+                await LoadProducts();
             }
             else
             {
-                var error = await response.Content.ReadAsStringAsync();
-                Snackbar.Add($"Erro ao atualizar: {error}", Severity.Error);
+                Snackbar.Add("Erro ao atualizar o produto.", Severity.Error);
             }
         }
         catch (Exception ex)
         {
             Console.WriteLine($"Exceção ao atualizar produto: {ex.Message}");
         }
+        }
+    }
+
+    private async void DeleteSelectedItems()
+    {
+        foreach (var item in selectedItems)
+        {
+            await ProductService.DeleteProductAsync(item.Id);
+        }
+
+        await LoadProducts();
+        selectedItems.Clear();
+        StateHasChanged();
     }
 
 
+    private async Task<bool> ValidatePrice(Product product)
+    {
+        if (product == null)
+        {
+            Snackbar.Add("Produto não encontrado na edição.", Severity.Warning);
+            return false;
+        }
 
+        if (product.Price < 1)
+        {
+            Snackbar.Add("O preço não pode ser menor que R$1.", Severity.Warning);
+            await LoadProducts();
+            return false;
+        }
 
- 
+        return true;
+    }
+
 }

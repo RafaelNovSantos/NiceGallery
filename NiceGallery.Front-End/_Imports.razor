@@ -10,7 +10,10 @@
 @using NiceGallery.Web.Layout
 @using MudBlazor
 @using NiceGallery.Web.Models
+@using NiceGallery.Web.Interfaces
 @inject IDialogService DialogService
 @using NiceGallery.Web.Dialogs
 @inject ISnackbar Snackbar
 @inject NavigationManager NavManager
+@inject HttpClient Http
+@inject IProductService ProductService

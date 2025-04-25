@@ -3,21 +3,21 @@
 <ul class="menu-sidebar">
     <li>
         <a href="">
-            <MudIcon Icon="@Icons.Material.Filled.Home" Title="Logo" />
+            <MudIcon Icon="@Icons.Material.Filled.Home" Title="Início" />
             <span>Início</span>
         </a>
     </li>
 
     <li>
         <a href="editproducts">
-            <MudIcon Icon="@Icons.Material.Filled.Edit" Title="Chat" />
+            <MudIcon Icon="@Icons.Material.Filled.Edit" Title="Gerenciar Produtos" />
             <span>Gerenciar Produtos</span>
         </a>
     </li>
 
     <li>
         <a href="report">
-            <MudIcon Icon="@Icons.Material.Filled.ListAlt" Title="Logo" />
+            <MudIcon Icon="@Icons.Material.Filled.ListAlt" Title="Relatório de produtos" />
             <span>Relatório de produtos</span>
         </a>
     </li>
@@ -27,7 +27,7 @@
     <li>
         <MudDivider></MudDivider>
         <a >
-            <MudIcon Icon="@Icons.Material.Filled.Notifications" Color="Color.Primary" Title="Notificações" />
+            <MudIcon Icon="@Icons.Material.Filled.Inventory" Style="@($"color:{_theme.PaletteLight.DrawerBackground};")" Title="Logo" />
             <span>Nice Gallery</span>
         </a>
     </li>
@@ -36,16 +36,16 @@
 <MudAppBar Class="menu-app-bar" Color="Color.Primary" Elevation="0">
     <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@ToggleDrawer" />
     <MudSpacer />
-    <MudIconButton Icon="@Icons.Custom.Brands.GitHub" Color="Color.Inherit" Href="" Target="_blank" />
+    <MudIconButton Icon="@Icons.Material.Filled.Inventory" Color="Color.Inherit" Href="" Target="_blank" />
 </MudAppBar>
 <MudDrawer @bind-Open="@_open" Elevation="1" Variant="@DrawerVariant.Responsive">
     <MudDrawerHeader>
-        <MudText Typo="Typo.h6">My App</MudText>
+        <MudText Typo="Typo.h6">Nice Gallery</MudText>
     </MudDrawerHeader>
     <MudNavMenu>
-        <MudNavLink Match="NavLinkMatch.All">Store</MudNavLink>
-        <MudNavLink Match="NavLinkMatch.All">Library</MudNavLink>
-        <MudNavLink Match="NavLinkMatch.All">Community</MudNavLink>
+        <MudNavLink Match="NavLinkMatch.All"  Href="/">Início</MudNavLink>
+        <MudNavLink Match="NavLinkMatch.All" Href="/editproducts">Gerenciar Produtos</MudNavLink>
+        <MudNavLink Match="NavLinkMatch.All" Href="/report">Relatório de produtos</MudNavLink>
     </MudNavMenu>
 </MudDrawer>
 
@@ -70,7 +70,7 @@
         list-style: none;
         position: fixed;
         padding: 0.3rem;
-        background-color: #1ec8a5;
+        background-color: #d10246;
         display: flex;
         width: 58px;
         flex-direction: column;
@@ -246,7 +246,7 @@
 @code {
     private bool _open = false;
 
-
+    private MudTheme _theme = new MudTheme();
     private void ToggleDrawer()
     {
         _open = !_open;
