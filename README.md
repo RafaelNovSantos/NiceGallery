@@ -21,7 +21,7 @@ Este projeto é uma aplicação Blazor (com Blazor WebAssembly) que permite visu
 
 ## Requisitos
 
-- **.NET SDK**: Para rodar o back-end e o Blazor. [Baixar aqui](https://dotnet.microsoft.com/download/dotnet).
+- **.NET SDK 9**: Para rodar o back-end e o Blazor. [Baixar aqui](https://dotnet.microsoft.com/download/dotnet).
 - **Editor de código**: Visual Studio.
 
 ## Instruções de Execução
