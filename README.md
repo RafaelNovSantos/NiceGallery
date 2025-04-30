@@ -41,11 +41,20 @@ cd NiceGallery.Api
 dotnet tool install —global dotnet-ef
 ```
 
-### 3. Criar a base de dados e rodar as migrações
+### 3.(OPCIONAL) Criar a base de dados e rodar as migrações (Caso não deseje utilizar o banco de dados em memória, mas sim utilizar o Postgres Local)
 ```bash
 dotnet ef migrations add Product
 dotnet ef database update
 ```
+
+E mude também a configuração do ASPNETCORE_ENVIRONMENT para "Staging", se quiser utilizar o banco de dados em memória utilize "Development"
+
+![image](https://github.com/user-attachments/assets/af3b06ca-0925-4e5e-af6e-2feb3a931d86)
+
+Mude a conexão do banco Postgres no arquivo appsettings.json
+
+![image](https://github.com/user-attachments/assets/600bdd3e-5972-4484-9b62-fd278bbc51bc)
+
 
 ### 4. Para rodar a API e o Front-End juntos, configure a inicialização para a configuração "Start API and Front" e clique em "Start"
 
