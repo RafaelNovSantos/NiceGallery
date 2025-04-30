@@ -9,30 +9,30 @@ namespace NiceGallery.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ProdutosController : ControllerBase
+    public class ProductsController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
-        private readonly ILogger<ProdutosController> _logger;
+        private readonly ILogger<ProductsController> _logger;
 
-        public ProdutosController(ApplicationDbContext context, ILogger<ProdutosController> logger)
+        public ProductsController(ApplicationDbContext context, ILogger<ProductsController> logger)
         {
             _context = context;
             _logger = logger;
         }
 
-        // GET: api/Produtos
+        // GET: api/Products
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Product>>> GetProdutos()
+        public async Task<ActionResult<IEnumerable<Product>>> GetProducts()
         {
             try
             {
-                var produtos = await _context.Produtos.ToListAsync();
-                if (produtos == null || !produtos.Any())
+                var product = await _context.Products.ToListAsync();
+                if (product == null || !product.Any())
                 {
                     return NoContent();
                 }
 
-                return Ok(produtos);
+                return Ok(product);
             }
             catch (Exception ex)
             {
@@ -41,18 +41,18 @@ namespace NiceGallery.Api.Controllers
             }
         }
 
-        // GET: api/Produtos/5
+        // GET: api/Products/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Product>> GetProduto(int id)
+        public async Task<ActionResult<Product>> GetProduct(int id)
         {
             try
             {
-                var produto = await _context.Produtos.FindAsync(id);
+                var product = await _context.Products.FindAsync(id);
 
-                if (produto == null)
+                if (product == null)
                     return NotFound(new { mensagem = "Produto não encontrado." });
 
-                return Ok(produto);
+                return Ok(product);
 
             }
             catch (Exception ex)
@@ -62,9 +62,9 @@ namespace NiceGallery.Api.Controllers
             }
         }
 
-        // POST: api/Produtos
+        // POST: api/Products
         [HttpPost]
-        public async Task<IActionResult> PostProduto([FromBody] CreateProductDto dto)
+        public async Task<IActionResult> PostProduct([FromBody] CreateProductDto dto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -72,20 +72,20 @@ namespace NiceGallery.Api.Controllers
             try
             {
                 // Criar o produto com os dados do DTO
-                var produto = new Product
+                var product = new Product
                 {
                     Name = dto.Name,
                     Price = dto.Price
                 };
 
-                _context.Produtos.Add(produto);
+                _context.Products.Add(product);
                 await _context.SaveChangesAsync();
 
                 // Retornar o produto com o id gerado
-                return CreatedAtAction(nameof(GetProduto), new { id = produto.Id }, new
+                return CreatedAtAction(nameof(GetProduct), new { id = product.Id }, new
                 {
                     mensagem = "Produto cadastrado com sucesso!",
-                    produto
+                    product
                 });
             }
             catch (Exception ex)
@@ -97,17 +97,17 @@ namespace NiceGallery.Api.Controllers
 
 
 
-        // PUT: api/Produtos/5
+        // PUT: api/Products/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutProduto(int id, Product produto)
+        public async Task<IActionResult> PutProduct(int id, Product product)
         {
-            if (id != produto.Id)
+            if (id != product.Id)
                 return BadRequest(new { mensagem = "O ID do produto não corresponde ao ID fornecido na URL." });
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            _context.Entry(produto).State = EntityState.Modified;
+            _context.Entry(product).State = EntityState.Modified;
 
             try
             {
@@ -116,7 +116,7 @@ namespace NiceGallery.Api.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!ProdutoExists(id))
+                if (!ProductExists(id))
                     return NotFound(new { mensagem = "Produto não encontrado para atualização." });
 
                 throw;
@@ -129,19 +129,19 @@ namespace NiceGallery.Api.Controllers
         }
 
 
-        // DELETE: api/Produtos/5
+        // DELETE: api/Products/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteProduto(int id)
+        public async Task<IActionResult> DeleteProduct(int id)
         {
             try
             {
-                var produto = await _context.Produtos.FindAsync(id);
-                if (produto == null)
+                var product = await _context.Products.FindAsync(id);
+                if (product == null)
                 {
                     return NotFound(new { mensagem = "Produto não encontrado para exclusão." });
                 }
 
-                _context.Produtos.Remove(produto);
+                _context.Products.Remove(product);
                 await _context.SaveChangesAsync();
 
                 return Ok(new { mensagem = "Produto excluído com sucesso!" });
@@ -153,9 +153,9 @@ namespace NiceGallery.Api.Controllers
             }
         }
 
-        private bool ProdutoExists(int id)
+        private bool ProductExists(int id)
         {
-            return _context.Produtos.Any(e => e.Id == id);
+            return _context.Products.Any(e => e.Id == id);
         }
     }
 }

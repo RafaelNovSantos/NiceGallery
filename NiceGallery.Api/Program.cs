@@ -7,15 +7,17 @@ using NiceGallery.Api.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
-if (builder.Environment.IsDevelopment())
+var usePostgres = Environment.GetEnvironmentVariable("USE_POSTGRES") == "true";
+
+if (usePostgres || !builder.Environment.IsDevelopment())
 {
     builder.Services.AddDbContext<ApplicationDbContext>(options =>
-        options.UseInMemoryDatabase("NiceGalleryDb"));
+        options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 }
 else
 {
     builder.Services.AddDbContext<ApplicationDbContext>(options =>
-        options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+        options.UseInMemoryDatabase("NiceGalleryDb"));
 }
 
 
@@ -41,7 +43,7 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment() || app.Environment.IsStaging())
 {
     app.UseSwagger();
     app.UseSwaggerUI(c =>

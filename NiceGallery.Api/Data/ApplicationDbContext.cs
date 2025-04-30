@@ -10,7 +10,7 @@ namespace NiceGallery.Api.Data
 
 
 
-        public DbSet<Product> Produtos { get; set; }
+        public DbSet<Product> Products { get; set; }
 
        
     }
